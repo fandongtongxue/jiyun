@@ -8,6 +8,7 @@ import com.qiniu.util.Auth;
 import com.qiniu.util.Json;
 import com.qiniu.util.StringMap;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -65,7 +66,7 @@ public class QiniuBucketController {
         try {
             stringMap.put("data", bucketManager.domainList(params.get("bucket")));
             stringMap.put("code", 0);
-            stringMap.put("message", "获取BucketList成功");
+            stringMap.put("message", "获取BucketdDomainList成功");
         } catch (QiniuException e) {
 //            throw new RuntimeException(e);
             stringMap.put("data", null);

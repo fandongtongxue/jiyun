@@ -10,30 +10,30 @@ import com.qiniu.util.Json;
 import com.qiniu.util.StringMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-
+@RestController
 public class QiniuFileController {
     private StringMap stringMap;
 
     @PostMapping("/qiniu/getFileList")
-    public String getFileList(@RequestParam Map<String, Object> params) {
+    public String getFileList(@RequestParam Map<String, String> params) {
         stringMap = new StringMap();
         //设置需要操作的账号的AK和SK
-        String ACCESS_KEY = (String)params.get("AK");
-        String SECRET_KEY = (String)params.get("SK");
+        String ACCESS_KEY = params.get("AK");
+        String SECRET_KEY = params.get("SK");
         Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
 
         //指定区域，可以用 Zone.autoZone() 自动获取
-        Zone z = Zone.zone0();
+        Zone z = Zone.autoZone();
         Configuration c = new Configuration(z);
 
         //实例化一个BucketManager对象
         BucketManager bucketManager = new BucketManager(auth, c);
-
         try {
-            Response response = bucketManager.listV1((String)params.get("bucket"), (String)params.get("prefix"), (String)params.get("marker"), (int)params.get("limit"), (String)params.get("delimiter"));
-            stringMap.put("data", response.jsonToArray());
+            Response response = bucketManager.listV1(params.get("bucket"), params.get("prefix"), params.get("marker"), Integer.parseInt(params.get("limit")), params.get("delimiter"));
+            stringMap.put("data", response.jsonToMap().map());
             stringMap.put("code", 0);
             stringMap.put("message", "获取FileList成功");
         } catch (QiniuException e) {
